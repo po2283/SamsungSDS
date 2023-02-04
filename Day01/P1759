@@ -1,0 +1,54 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.StringTokenizer;
+
+public class Main {
+    public static int L, C;
+    public static String[] alphabet;
+    public static boolean[] visit;
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+
+        L = Integer.parseInt(st.nextToken());
+        C = Integer.parseInt(st.nextToken());
+        alphabet = new String[C];
+        visit = new boolean[C];
+
+        String[] s = br.readLine().split(" ");
+        for(int i=0; i<s.length; i++){
+            alphabet[i] = s[i];
+        }
+
+        Arrays.sort(alphabet);
+
+        bfs(-1, 0, 0, 0, "");
+
+    }
+
+    public static void bfs(int current, int length, int j, int m,  String pass) {
+
+
+        //2. 목적지인지 학인
+        if (length == L) {
+            if (j >= 2 && m >= 1) {
+                System.out.println(pass);
+            }
+
+        } else {
+            for (int i = current + 1; i < C; i++) {
+                if (alphabet[i].equals("a")  || alphabet[i].equals("e") || alphabet[i].equals("i") || alphabet[i].equals("o") || alphabet[i].equals("u")) {
+                    bfs(i, length + 1, j, m + 1, pass + alphabet[i]);
+                } else {
+                    bfs(i, length + 1, j + 1, m, pass + alphabet[i]);
+                }
+
+            }
+        }
+    }
+
+
+}
