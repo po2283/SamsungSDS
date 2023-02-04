@@ -1,0 +1,113 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Main {
+    public static int N, K;
+
+    public static boolean[] visit;
+    public static String[] words;
+    public static int answer;
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+
+        N = Integer.parseInt(st.nextToken());
+        K = Integer.parseInt(st.nextToken());
+        words = new String[N];
+        visit = new boolean[26];
+        answer = 0;
+
+        for(int i=0; i<N; i++){
+            String word = br.readLine();
+            words[i] = word;
+        }
+
+        if(K == 26){
+            System.out.println(N);
+            return;
+        }
+
+        //고정된 글자는 미리 방문
+        visit['a'-'a'] = true;
+        visit['c' - 'a'] = true;
+        visit['i' - 'a'] = true;
+        visit['n' - 'a'] = true;
+        visit['t' - 'a'] = true;
+
+        K -= 5;
+
+        if(K < 0){
+            System.out.println("0");
+            return;
+        }else if(K == 0){
+            int answer = 0;
+            for(int i=0; i<words.length; i++){
+                String word = words[i];
+                boolean flag = true;
+                for(int j=0; j<word.length(); j++){
+                    char c = word.charAt(j);
+                    if(visit[c-97] == false){
+                        flag = false;
+                        break;
+                    }
+                }
+                if(flag == true){
+                    answer++;
+                }
+            }
+            System.out.println(answer);
+            return;
+        }
+
+        for(int i=0; i< visit.length; i++){
+            if(visit[i] == false){
+                bfs(i, 0);
+            }
+        }
+
+        System.out.println(answer);
+
+    }
+
+    public static void bfs(int alphabet, int count){
+        //1. 체크인
+        visit[alphabet] = true;
+        count += 1;
+
+        //2. 목적지인가?
+        if(K == count){
+            int newAnswer = 0;
+            for(int i=0; i< words.length; i++){
+                String word = words[i];
+                boolean flag = true;
+
+                for(int j=0; j< word.length(); j++){
+                    char c = word.charAt(j);
+                    if(visit[c-97] == false){
+                        flag = false;
+                        break;
+                    }
+                }
+                if(flag == true){
+                    newAnswer++;
+                }
+            }
+            answer = Math.max(answer, newAnswer);
+        }
+
+        //3. 연결된 곳을 순회
+        for(int i=alphabet+1; i<visit.length; i++){
+            //4. 갈 수 있는가?
+            if(visit[i] == false){
+                //5. 간다
+                bfs(i, count);
+            }
+        }
+
+        //6. 채크 아웃
+        visit[alphabet] = false;
+        count -= 1;
+    }
+}
